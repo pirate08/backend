@@ -27,6 +27,12 @@ const TaskSchema = new mongoose.Schema(
       enum: ['Office', 'Personal', 'Home', 'Workout'],
       default: 'Office',
     },
+    priority: {
+      type: String,
+      required: true,
+      enum: ['Low', 'Medium', 'High'],
+      default: 'Low',
+    },
   },
   { timestamps: true }
 );
