@@ -7,12 +7,6 @@ const TaskSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      validate: {
-        validator: function (v) {
-          return v.trim().split(/\s+/).length <= 30;
-        },
-        message: 'Description must not exceed 30 words.',
-      },
     },
     dueDate: Date,
     status: {

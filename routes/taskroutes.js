@@ -2,6 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Tasks = require('../models/Task');
 
+// --Get tasks by summary--
+router.get('/summary', async (req, res) => {
+  try {
+    const totalTasks = await Tasks.countDocuments();
+    const completedTasks = await Tasks.countDocuments({ status: 'Completed' });
+    const highpriorityTasks = await Tasks.countDocuments({ priority: 'High' });
+    const pendingTasks = totalTasks - completedTasks;
+    const completionRate =
+      totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+    return res.status(200).json({
+      totalTasks,
+      completedTasks,
+      highpriorityTasks,
+      pendingTasks,
+      completionRate,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // -- Get all tasks --
 router.get('/', async (req, res) => {
   try {
@@ -60,28 +82,6 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Task is not found' });
     }
     res.json({ message: 'Task deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// --Get tasks by summary--
-router.get('/summary', async (req, res) => {
-  try {
-    const totalTasks = await Tasks.countDocuments();
-    const completedTasks = await Tasks.countDocuments({ status: 'Completed' });
-    const highpriorityTasks = await Tasks.countDocuments({ priority: 'High' });
-    const pendingTasks = totalTasks - completedTasks;
-    const completionRate =
-      totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-
-    return res.status(200).json({
-      totalTasks,
-      completedTasks,
-      highpriorityTasks,
-      pendingTasks,
-      completionRate,
-    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
